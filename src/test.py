@@ -1,22 +1,11 @@
 
-import textwrap
+import mapgen
 import textgen
+import textwrap
 
-class Room:
-    def __init__(self):
-        self.name = None
-        self.description = None
-        self.n = None
-        self.s = None
-        self.e = None
-        self.w = None
-		
-
-
-
-room = Room()
+room = mapgen.Location()
 room.name = "Zamafradar Room"
-room.description = textgen.get_basic_room_description(room)
+room.description = textgen.describe(room)
 
 header = "You are currently in [%s]" % room.name
 print("-" * len(header))
@@ -24,3 +13,12 @@ print(textwrap.fill(header))
 print("-" * len(header))
 print(textwrap.fill(room.description))
 
+map = mapgen.create_dfs_map(10,10)
+
+for i in map:
+    for j in i:
+        if j.name == None:
+            print("* ", end="")
+        else:
+            print("  ", end="")
+    print("")

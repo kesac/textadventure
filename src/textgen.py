@@ -1,9 +1,10 @@
 
+# Responsible for procedurally generated text
+
 import random
 
-
-def get_basic_room_description(room):
-    """A randomized, but very limited room description generator"""
+def describe(room):
+    """Generates a randomized, but very limited description of the specified Location object."""
     
     sizes = ["a small","an average","a large","a massive"]
     
