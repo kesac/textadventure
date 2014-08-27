@@ -17,5 +17,5 @@ print("-" * len(header))
 print(textwrap.fill(room.description))
 print()
 
-map = mapgen.create_dfs_map(10,10)
+map = mapgen.create_dfs_map(8,8)
 mapvis.visualize(map)

@@ -18,17 +18,19 @@ class Location:
         self.e = None
         self.w = None
 
-
-def is_valid(grid,x,y):
-    """Valid only if the given coordinates exist on the specified grid (2D array)"""
+# Valid only if the given coordinates exist on the specified grid (2D array)
+def is_valid(grid,x,y):  
     if x < 0 or y < 0 or x >= len(grid) or y >= len(grid[0]): 
         return False
     else:
         return True
 
-def is_visited(grid,x,y):
+# It is assumed that unvisited locations do not have a name.
+def is_visited(grid,x,y):    
     return grid[x][y].name != None
 
+# Returns the total of neighbouring (n,s,w,e directions only) locations that have been visited.
+# Used to control sparseness of a generated map.
 def visited_neighbour_count(grid,x,y):
     sum = 0
     if is_valid(grid,x + 1,y) and is_visited(grid,x + 1,y):
@@ -51,33 +53,33 @@ def create_dfs_map(width, height):
     edges = {}
     
     # Record each location's grid coordinates 
-    i,j = 0,0
-    for row in grid:
-        j = 0
-        for location in row:
-            location.x = i
-            location.y = j
-            j += 1
-        i += 1    
-
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            grid[i][j].x = i
+            grid[i][j].y = j
+        
     # Start generating the map by depth-first search exploration
     def dfs(grid, x, y, prev_x, prev_y):
 
-        if not is_valid(grid, x, y):
+        if not is_valid(grid, x, y): 
             return
         if is_visited(grid, x, y):
             return
-        if visited_neighbour_count(grid, x, y) > 1:
+            
+        # This has an impact on density. Choose a number from 1-4 inclusive. The higher the number, the more dense the map.
+        if visited_neighbour_count(grid, x, y) > 1: 
             return
                
-        # Otherwise, mark as visited
+        # If this is a valid, unvisited location, mark it as visited
+        # and record the connection to the previous location in the edges
+        # table
         grid[x][y].name = "Visited"
         
         if prev_x != None and prev_y != None:
             edges['%s,%s->%s,%s' % (x, y, prev_x, prev_y)] = True
             edges['%s,%s->%s,%s' % (prev_x, prev_y, x, y)] = True
         
-        # Where should we go next?
+        # Randomly proceed to an adjacent, unvisited location
         places = []
         
         if is_valid(grid, x-1 ,y):
@@ -116,10 +118,6 @@ def create_dfs_map(width, height):
                 
             if is_valid(grid, x, y+1) and is_connected(edges, x, y, x, y+1):
                 grid[x][y].s = grid[x][y+1]
-                grid[x][y+1].w = grid[x][y]
+                grid[x][y+1].n = grid[x][y]
 
-        
-            
     return grid
-    
-#---------------------------------
