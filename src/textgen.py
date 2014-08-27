@@ -1,4 +1,5 @@
 
+# PROTOTYPE
 # Responsible for procedurally generated text
 
 import random
