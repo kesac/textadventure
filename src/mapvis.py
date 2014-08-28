@@ -4,71 +4,71 @@
 
 import tkinter
 
-offset = 50
-hspace = 50
-vspace = 50
-size   = 20
-linespace = 4
+OFFSET    = 50
+H_SPACE   = 50
+V_SPACE   = 50
+RECT_SIZE = 20
+LINESPACE = 4
 
 def visualize(map):
     root = tkinter.Tk()
     canvas = tkinter.Canvas(
                 root, 
-                width  = (offset*2) + (len(map)    * hspace), 
-                height = (offset*2) + (len(map[0]) * vspace), 
+                width  = (OFFSET*2) + (map.width  * H_SPACE), 
+                height = (OFFSET*2) + (map.height * V_SPACE), 
                 borderwidth = 0, 
                 highlightthickness = 0, 
                 bg = "white"
              )
     canvas.grid()
 
-    for i in range(len(map)):
-        for j in range(len(map[0])):
+    for i in range(map.width):
+        for j in range(map.height):
         
-            if map[i][j].name == None:
+            if map.get(i,j).name == None:
                 continue
             
             canvas.create_rectangle(
-                offset + i*hspace,
-                offset + j*hspace,
-                offset + i*hspace + size,
-                offset + j*hspace + size
+                OFFSET + i*H_SPACE,
+                OFFSET + j*H_SPACE,
+                OFFSET + i*H_SPACE + RECT_SIZE,
+                OFFSET + j*H_SPACE + RECT_SIZE
             )
             
-            location = map[i][j]
+            location = map.get(i,j)
             
             if location.e:
                 canvas.create_line(
-                    offset + i*hspace + size/2 + linespace, 
-                    offset + j*hspace + size/2 - linespace, 
-                    offset + (i+1)*hspace + size/2 - linespace, 
-                    offset + j*hspace + size/2 - linespace, 
+                    OFFSET + i*H_SPACE + RECT_SIZE/2 + LINESPACE, 
+                    OFFSET + j*H_SPACE + RECT_SIZE/2 - LINESPACE, 
+                    OFFSET + (i+1)*H_SPACE + RECT_SIZE/2 - LINESPACE, 
+                    OFFSET + j*H_SPACE + RECT_SIZE/2 - LINESPACE, 
                     fill = "red"
                 )
             if location.w:
                 canvas.create_line(
-                    offset + i*hspace + size/2 - linespace, 
-                    offset + j*hspace + size/2 + linespace, 
-                    offset + (i-1)*hspace + size/2 + linespace, 
-                    offset + j*hspace + size/2 + linespace, 
+                    OFFSET + i*H_SPACE + RECT_SIZE/2 - LINESPACE, 
+                    OFFSET + j*H_SPACE + RECT_SIZE/2 + LINESPACE, 
+                    OFFSET + (i-1)*H_SPACE + RECT_SIZE/2 + LINESPACE, 
+                    OFFSET + j*H_SPACE + RECT_SIZE/2 + LINESPACE, 
                     fill = "blue"
                 )
             
             if location.n:
                 canvas.create_line(
-                    offset + i*hspace + size/2 + linespace, 
-                    offset + j*hspace + size/2 - linespace,
-                    offset + (i)*hspace + size/2 + linespace, 
-                    offset + (j-1)*hspace + size/2 + linespace, 
+                    OFFSET + i*H_SPACE + RECT_SIZE/2 + LINESPACE, 
+                    OFFSET + j*H_SPACE + RECT_SIZE/2 - LINESPACE,
+                    OFFSET + (i)*H_SPACE + RECT_SIZE/2 + LINESPACE, 
+                    OFFSET + (j-1)*H_SPACE + RECT_SIZE/2 + LINESPACE, 
                     fill = "gray"
                 )
 
             if location.s:
                 canvas.create_line(
-                    offset + i*hspace + size/2 - linespace, 
-                    offset + j*hspace + size/2 + linespace, 
-                    offset + i*hspace + size/2 - linespace, 
-                    offset + (j+1)*hspace + size/2 - linespace, 
+                    OFFSET + i*H_SPACE + RECT_SIZE/2 - LINESPACE, 
+                    OFFSET + j*H_SPACE + RECT_SIZE/2 + LINESPACE, 
+                    OFFSET + i*H_SPACE + RECT_SIZE/2 - LINESPACE, 
+                    OFFSET + (j+1)*H_SPACE + RECT_SIZE/2 - LINESPACE, 
                     fill = "brown"
                 )
 
