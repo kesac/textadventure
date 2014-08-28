@@ -7,15 +7,11 @@ import random
 class Map:
     """Each text adventure is played out on a single map, which is just a 2D grid of Locations.
        Locations can be linked to each other if they are adjacent in one of the four cardinal directions (n,s,w,e)."""
-
-    EDGE_KEY = '%s,%s->%s,%s'
        
     def __init__(self, width, height):
         self.grid  = [[Location() for i in range(width)] for i in range(height)]
         
         # Table of strings describing edges between Location pairs
-        # Each string is a a table key in the following format: "x1,y1->x2,y2"
-        self.edges = {} 
         self.width = width
         self.height = height
         
@@ -81,9 +77,6 @@ def visited_neighbour_count(map, x, y):
     if is_valid(map, x, y - 1) and is_visited(map, x, y - 1):
         sum += 1
     return sum
-
-def has_edge(edges,x,y,x2,y2):
-    return '%s,%s->%s,%s' % (x, y, x2, y2) in edges
     
 def create_dfs_map(width, height):
     """Generates an adventure map using a randomized version of the depth-first search algorithm"""
