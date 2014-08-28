@@ -19,6 +19,11 @@ class Map:
         self.width = width
         self.height = height
         
+        # self.start_location
+        # self.end_location
+        # self.farthest_location
+        # self.leafs
+        
     def get(self, x,y):
         return self.grid[x][y]
     
@@ -34,7 +39,7 @@ class Map:
         elif y1 < y2:
             self.grid[x1][y1].s = self.grid[x2][y2]
             self.grid[x2][y2].n = self.grid[x1][y1]
-        elif y2 > y1:
+        elif y1 > y2:
             self.grid[x1][y1].n = self.grid[x2][y2]
             self.grid[x2][y2].s = self.grid[x1][y1]
 
@@ -88,8 +93,7 @@ def create_dfs_map(width, height):
     # Record each Location's grid coordinates 
     for i in range(map.width):
         for j in range(map.height):
-            #location = map.get(i, j)
-            location = map.grid[i][j]
+            location = map.get(i, j)
             location.x = i
             location.y = j
 
@@ -105,51 +109,25 @@ def create_dfs_map(width, height):
         if visited_neighbour_count(map, x, y) > 1: 
             return
                
-        # If this is a valid, unvisited location, mark it as visited
-        # and record the connection to the previous location in the edges
-        # table
-        #grid[x][y].name = "Visited"
+        # If this is a valid, unvisited location, mark it as visited, and connect it to the previous Location
         map.get(x,y).name = "Visited"
         
         if prev_x != None and prev_y != None:
             map.connect(x,y,prev_x,prev_y)
-            map.edges[map.EDGE_KEY % (x, y, prev_x, prev_y)] = True
-            map.edges[map.EDGE_KEY % (prev_x, prev_y, x, y)] = True
         
         # Randomly proceed to an adjacent, unvisited location
         places = []
-        
-        if is_valid(map, x-1 ,y):
-            places.append(map.get(x-1, y))
-
-        if is_valid(map, x, y-1):
-            places.append(map.get(x, y-1))
-            
-        if is_valid(map, x+1, y):
-            places.append(map.get(x+1, y))
-
-        if is_valid(map, x, y+1):
-            places.append(map.get(x, y+1))
+        for i in range(-1,2,2): # -1, 1 only
+            if is_valid(map, x+i, y):
+                places.append(map.get(x+i,y))
+                
+            if is_valid(map, x, y+i):
+                places.append(map.get(x,y+i))
         
         while len(places) > 0:
             next_location = places.pop(random.randint(0,len(places)-1))
             dfs(map, next_location.x, next_location.y, x, y)
 
     dfs(map, 0, 0, None, None)
-        
-    # Fill the connections out
-    #'''
-    for x in range(map.width):
-        for y in range(map.height):
-            
-            if is_valid(map, x-1, y) and has_edge(map.edges, x, y, x-1, y):
-                map.connect(x, y, x-1, y)
-            if is_valid(map, x, y-1) and has_edge(map.edges, x, y, x, y-1):
-                map.connect(x, y, x, y-1)
-            if is_valid(map, x+1, y) and has_edge(map.edges, x, y, x+1, y):
-                map.connect(x, y, x+1, y)
-            if is_valid(map, x, y+1) and has_edge(map.edges, x, y, x, y+1):
-                map.connect(x, y, x, y+1)
-    #'''
 
     return map
