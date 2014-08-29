@@ -1,14 +1,15 @@
 
 # PROTOTYPE
 # Draws and displays generated maps onscreen
+# It's purpose is to aid developers with map generation
 
 import tkinter
 
 OFFSET    = 50
 H_SPACE   = 50
 V_SPACE   = 50
-RECT_SIZE = 20
-LINESPACE = 4
+RECT_SIZE = 25
+LINESPACE = 6
 
 def visualize(map):
     root = tkinter.Tk()
@@ -25,14 +26,47 @@ def visualize(map):
     for i in range(map.width):
         for j in range(map.height):
         
-            if map.get(i,j).name == None:
+            location = map.get(i,j)
+        
+            if location.name == None:
                 continue
+            
+            room_color = "white"
+            
+            if location == map.starting_location:
+                canvas.create_text(
+                    OFFSET + i*H_SPACE + RECT_SIZE/2,
+                    OFFSET + j*H_SPACE + RECT_SIZE/2,
+                    text = "S",
+                    fill = "blue"
+                )
+            elif location == map.ending_location:
+                canvas.create_text(
+                    OFFSET + i*H_SPACE + RECT_SIZE/2,
+                    OFFSET + j*H_SPACE + RECT_SIZE/2,
+                    text = "E",
+                    fill = "red"
+                )
+            elif location.is_leaf():
+                canvas.create_text(
+                    OFFSET + i*H_SPACE + RECT_SIZE/2,
+                    OFFSET + j*H_SPACE + RECT_SIZE/2,
+                    text = "L",
+                    fill = "green"
+                )
+            else:
+                canvas.create_text(
+                    OFFSET + i*H_SPACE + RECT_SIZE/2,
+                    OFFSET + j*H_SPACE + RECT_SIZE/2,
+                    text = location.depth,
+                    fill = "gray"
+                )
             
             canvas.create_rectangle(
                 OFFSET + i*H_SPACE,
                 OFFSET + j*H_SPACE,
                 OFFSET + i*H_SPACE + RECT_SIZE,
-                OFFSET + j*H_SPACE + RECT_SIZE
+                OFFSET + j*H_SPACE + RECT_SIZE,
             )
             
             location = map.get(i,j)

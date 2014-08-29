@@ -6,6 +6,7 @@ import mapvis
 import textgen
 import textwrap
 
+'''
 room = mapgen.Location()
 room.name = "Zamafradar Room"
 room.description = textgen.describe(room)
@@ -16,6 +17,7 @@ print(textwrap.fill(header))
 print("-" * len(header))
 print(textwrap.fill(room.description))
 print()
+#'''
 
-map = mapgen.create_dfs_map(8,8)
+map = mapgen.create_dfs_map(10,10)
 mapvis.visualize(map)
