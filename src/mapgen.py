@@ -3,6 +3,7 @@
 # Responsible for procedurally generated maps
 
 import random
+import textgen
 
 class Map:
     """Each text adventure is played out on a single map, which is just a 2D grid of Locations.
@@ -125,6 +126,7 @@ def connect_recursively_sparse(map, x, y, previous_x, previous_y, current_depth)
     # Mark as visited, connect to the previous Location, and update the Location furthest from the starting location
     current_location = map.get(x,y)
     current_location.name = "Visited"
+    current_location.description = textgen.describe(current_location)
     current_location.depth = current_depth
     
     if not map.farthest_location or current_location.depth > map.farthest_location.depth:
@@ -170,6 +172,7 @@ def connect_single_adjacent(map, x, y):
         
         if is_valid(map, next_x, next_y) and not is_visited(map, next_x, next_y):
             next_location.name = "Visited"
+            next_location.description = textgen.describe(next_location)
             next_location.depth = map.get(x,y).depth + 1
             map.connect(x, y, next_x, next_y)
             break

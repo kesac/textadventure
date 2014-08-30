@@ -4,7 +4,7 @@
 
 import random
 
-def describe(room):
+def describe(location):
     """Generates a randomized, but very limited description of the specified Location object."""
     
     sizes = ["a small","an average","a large","a massive"]
