@@ -11,6 +11,7 @@ def start(map):
     # you are currently in a...
     # you can move...
     command = None
+    last_location = None
     
     while command != 'exit':
     
@@ -32,30 +33,37 @@ def start(map):
                 print('e ', end='')
         print(']')
     
+        if last_location:
+            print('You came from', last_location)
+    
         command = input(" > ")
         
         invalid_move = False
         if command == 'n':
             if player_location.n:
                 player_location = player_location.n
+                last_location = 's'
             else:
                 invalid_move = True
             
         if command == 's' and player_location.s:
             if player_location.s:
                 player_location = player_location.s
+                last_location = 'n'
             else:
                 invalid_move = True
             
         if command == 'w' and player_location.w:
             if player_location.w:
                 player_location = player_location.w
+                last_location = 'e'
             else:
                 invalid_move = True
             
         if command == 'e' and player_location.e:
             if player_location.e:
                 player_location = player_location.e
+                last_location = 'w'
             else:
                 invalid_move = True
     
