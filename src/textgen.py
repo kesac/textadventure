@@ -34,7 +34,19 @@ NEGATIVE_EMOTION_ADJ = ['angry', 'annoyed', 'anxious', 'arrogant', 'ashamed', 'a
 
 SIZE = ['average', 'big', 'colossal', 'gigantic', 'great', 'huge', 'immense', 'large', 'little', 'mammoth', 'massive', 'miniature', 'puny', 'short', 'small', 'tall', 'teeny', 'teeny-tiny', 'tiny']
 
+ART_SUBJECTS = ['man', 'woman', 'cake', 'treasure chest', 'whale', 'angel']
+
+COMMON_ROOM_OBJECTS = ['table', 'chair', 'desk', 'wagon', 'bookshelf', 'bench', 'statue']
+
 ROOM_SHAPE = ['triangular', 'rectangular', 'square', 'pentagonal', 'hexagonal', 'heptagonal', 'octagonal', 'decagonal', 'spherical', 'circular', 'round', 'star', 'pentagram', 'oval', 'oblong', 'irregular']
+
+ROOM_LEAF = ['room', 'dead end', 'impasse']
+
+ROOM_HALL = ['room', 'hallway', 'corridor', 'passage', 'staircase']
+
+ROOM_TURN = ['room', 'bend', 'precipice', 'twist', 'turn', 'corner']
+
+ROOM_INTERSECTION = ['room', 'intersection', 'junction']
 
 
 def random_word(list):
@@ -49,25 +61,26 @@ def describe(location):
 
     # lighting
     def get_lighting():
-        if random.random() < 0.33:
-            return "There are torches on the walls, but none are lit. It is difficult to see other details inside the room, but %s scent overwhelms you." % random_word_a(SMELL_ADJ)
-        elif random.random() < 0.67:
-            return "Multiple torches on every wall provide adequate lighting."
+        if random.random() < 0.50:
+            if 'dark' in location.attributes:
+                return "There are torches on the walls, but none are lit. It is difficult to see other details inside the room, but %s scent overwhelms you." % random_word_a(SMELL_ADJ)
+            elif 'bright' in location.attributes:
+                return "Multiple torches on every wall provide adequate lighting."
         else:
             return ""
     
     # points of interest in the room
     def get_points_of_interest():
-        if random.random() < 0.33:
-            return "There is an oak table in the middle of the room. As you run your hand across its surface, you could only describe the feeling as %s." % random_word(TEXTURE_ADJ)
-        elif random.random() < 0.67:
-            return "There is a large %s painting of young woman with %s hair on the wall. The eyes of the painting appear to have been scratched out." % (random_word(ART_ADJ), random_word(COLOR_ADJ))
+        if 'common_item' in location.attributes:    
+            return "There is %s in the middle of the room. As you run your hand across its surface, you could only describe the feeling as %s." % (random_word_a(COMMON_ROOM_OBJECTS), random_word(TEXTURE_ADJ))
+        elif 'special_item' in location.attributes:
+            return "There is a large, %s painting of %s with %s hair on the wall. The eyes of the painting appear to have been scratched out." % (random_word(COLOR_ADJ), random_word_a(ART_SUBJECTS), random_word(COLOR_ADJ))
         else:
             return ""
     
     def get_emotion():
         if random.random() < 0.33:
-            if random.random() < 0.2:
+            if 'positive' in location.attributes:
                 return "You find the room %s." % random_word(POSITIVE_EMOTION_EFFECTOR_ADJ)
             else:
                 return "You can't put your finger on it, but something about this room makes you feel terribly %s." % random_word(NEGATIVE_EMOTION_ADJ)
@@ -76,13 +89,23 @@ def describe(location):
     
     # location of exits
     def get_exits():
-        if location.is_leaf():
+        if 'leaf' in location.attributes:
             return "As far as you can tell, there are no other exits or entrances to this room."
         else:
             return ""
+    
+    def get_room_type():
+        if 'leaf' in location.attributes:
+            return random_word(ROOM_LEAF)
+        elif 'hall' in location.attributes:
+            return random_word(ROOM_HALL)
+        elif 'turn' in location.attributes:
+            return random_word(ROOM_TURN)
+        elif 'intersection' in location.attributes:
+            return random_word(ROOM_INTERSECTION)
         
     description = [
-        "You find yourself in %s, %s-shaped room." % (random_word_a(SIZE), random_word(ROOM_SHAPE)),
+        "You find yourself in %s, %s-shaped %s." % (random_word_a(SIZE), random_word(ROOM_SHAPE), get_room_type()),
         " %s" % (get_points_of_interest()),
         " %s" % (get_lighting()),
         " %s" % (get_emotion()),

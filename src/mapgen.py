@@ -19,13 +19,13 @@ class Map:
                 location.x = i
                 location.y = j
         
-        # Table of strings describing edges between Location pairs
         self.width = width
         self.height = height
         
         self.start_location = None
         self.end_location = None
         self.farthest_location = None
+        self.attributes = []
         
         # self.leafs # Locations with only 1 connection out
         # self.halls # Locations with 2 connections out that are opposite directions
@@ -58,7 +58,8 @@ class Location:
     def __init__(self):
         self.name  = None
         self.description = None
-                
+        self.attributes = []        
+        
         self.x = -1
         self.y = -1
         
@@ -66,8 +67,8 @@ class Location:
         self.s = None
         self.e = None
         self.w = None
-        
-    def is_leaf(self):
+
+    def edge_count(self):
         sum = 0
         if self.n:
             sum += 1
@@ -77,12 +78,15 @@ class Location:
             sum += 1
         if self.w:
             sum += 1
-        return sum == 1
+        return sum
+
+    def is_leaf(self):
+        return self.edge_count() == 1
 
 # --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  --  
 
 
-# True iff if the given coordinates exist on the specified map
+# True iff the given coordinates exist on the specified map
 def is_valid(map, x, y):  
     if x < 0 or y < 0 or x >= map.width or y >= map.height: 
         return False
@@ -109,6 +113,7 @@ def visited_neighbour_count(map, x, y):
         sum += 1
     return sum
 
+    
 # Introduces most of a map's main layout by recursively connecting Locations
 # together using randomized depth-first search. It enforces sparseness when
 # connecting rooms. This function is recursive.
@@ -175,6 +180,45 @@ def connect_single_adjacent(map, x, y):
             map.connect(x, y, next_x, next_y)
             break
 
+# Adds attributes to the room which can have an affect
+# on items, events, descriptions, etc
+def generate_attributes(map, x, y):
+    
+    new_attributes = []
+    location = map.get(x,y)
+    edges = location.edge_count()
+    
+    
+    # Physical attributes
+    if edges == 1:
+        new_attributes.append('leaf')
+    elif edges == 2 and ((location.n and location.s) or (location.w and location.e)):
+        new_attributes.append('hall')
+    elif edges == 2:
+        new_attributes.append('turn')
+    else:
+        new_attributes.append('intersection')
+    
+    # Lighting
+    if random.random() < 0.33:
+        new_attributes.append('dark')
+    else:
+        new_attributes.append('bright')
+    
+    # Atmospheric attributes
+    if random.random() < 0.2:
+        new_attributes.append('positive')
+    else:
+        new_attributes.append('negative')
+        
+    # Items
+    if random.random() < 0.5:
+        new_attributes.append('common_item')
+    elif random.random() < 0.7:
+        new_attributes.append('special_item')
+    
+    return new_attributes
+            
 # Generates an adventure map using a randomized version of the depth-first search algorithm
 def create_dfs_map(width, height):
 
@@ -184,7 +228,10 @@ def create_dfs_map(width, height):
     connect_recursively_sparse(map, start_x, start_y, None, None, 0)
     
     map.starting_location = map.get(start_x,start_y)
+    map.starting_location.attributes += ['start']
+    
     map.ending_location = map.farthest_location
+    map.ending_location.attributes += ['end']
     
     for i in range(0,3):
         connect_single_adjacent(map, start_x, start_y)
@@ -198,6 +245,7 @@ def create_dfs_map(width, height):
     for i in range(map.width):
         for j in range(map.height):
             location = map.get(i, j)
+            location.attributes += generate_attributes(map, i, j)
             location.description = textgen.describe(location)  
     
     return map
