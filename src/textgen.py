@@ -6,6 +6,8 @@ import random
 
 VOWELS = ['a', 'e', 'i', 'o', 'u']
 
+NEW_ROOM_VERB = ['You find yourself in', 'You discover', 'You stumble into', 'You walk into', 'You stroll into', 'Absentmindedly tripping over your own feet, you awkwardly fall, but gracefully recover by rolling into', 'You force your way into']
+
 COLOR_ADJ = ['amber', 'amethyst', 'aqua', 'aquamarine', 'avocado', 'azure', 'bistre', 'black', 'blue', 'brass', 'bright', 'brilliant', 'brindle', 'bronze', 'buff', 'burgundy', 'canary', 'carmine', 'carnelian', 'cerise', 'charcoal', 'chartreuse', 'chestnut', 'chocolate', 'chrome', 'citrine', 'claret', 'clear', 'cobalt', 'copper', 'coral', 'cordovan', 'cream', 'crimson', 'crystalline', 'cyan', 'dark', 'drab', 'dull', 'dun', 'ebony', 'emerald', 'flesh', 'flushed', 'fuchsia', 'garnet', 'gay', 'glassy ', 'gold', 'green', 'grizzly', 'henna', 'indigo', 'iridescent', 'ivory', 'jade', 'jet', 'khaki', 'lake', 'lavender', 'lemon', 'light', 'lilac', 'lime', 'magenta', 'mahogany', 'maize', 'maroon', 'mauve', 'milky', 'mint', 'mustard', 'navy', 'obsidian', 'ocher', 'olive', 'onyx', 'opaque', 'orange', 'orchid', 'pale', 'peach', 'pearl', 'pearly', 'pink', 'plum', 'poppy', 'primrose', 'puce', 'purple', 'red', 'rose', 'ruby', 'ruddy', 'rust', 'sable', 'saffron', 'salmon', 'sapphire', 'scarlet', 'sepia', 'shimmering', 'sienna', 'silver', 'slate', 'smoky', 'snowy', 'sooty', 'spruce', 'tan', 'topaz', 'translucent', 'transparent', 'turquoise', 'twinkling', 'ultramarine', 'umber', 'vermilion', 'violet', 'walnut', 'white', 'wine', 'yellow']
 
 TOUCH_ADJ = ['cold', 'cool', 'crisp', 'damp', 'dry', 'dull', 'elastic', 'explode', 'feathery', 'firm', 'fishy', 'fleshy', 'fragile', 'furry', 'fuzzy', 'gritty', 'hairy', 'hard', 'hot', 'icy', 'leathery', 'lukewarm', 'moist', 'oily', 'pebbly', 'prickly', 'pulpy', 'rough', 'rubbery', 'sandy', 'satiny', 'sharp', 'silky', 'slimy', 'slippery', 'smooth', 'soft', 'spongy', 'steamy', 'sticky', 'stuccoed', 'tacky', 'tender', 'tepid', 'textured', 'thick', 'thin', 'tough', 'velvety', 'warm', 'waxy', 'wet', 'wooly']
@@ -94,6 +96,12 @@ def describe(location):
         else:
             return ""
     
+    def get_enter_verb():
+        if 'start' in location.attributes:
+            return NEW_ROOM_VERB[0]
+        else:
+            return random_word(NEW_ROOM_VERB)
+    
     def get_room_type():
         if 'leaf' in location.attributes:
             return random_word(ROOM_LEAF)
@@ -105,7 +113,7 @@ def describe(location):
             return random_word(ROOM_INTERSECTION)
         
     description = [
-        "You find yourself in %s, %s-shaped %s." % (random_word_a(SIZE), random_word(ROOM_SHAPE), get_room_type()),
+        "%s %s, %s-shaped %s." % (get_enter_verb(), random_word_a(SIZE), random_word(ROOM_SHAPE), get_room_type()),
         " %s" % (get_points_of_interest()),
         " %s" % (get_lighting()),
         " %s" % (get_emotion()),
